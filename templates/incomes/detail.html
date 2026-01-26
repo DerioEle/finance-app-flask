@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="form-wrapper">
+    <div class="form-card">
+        <h1>Detalhes da Receita</h1>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Descrição</label>
+                <div class="detail-value">{{ income.description }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Valor</label>
+                <div class="detail-value">
+                    R$ {{ "%.2f"|format(income.amount) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Categoria</label>
+                <div class="detail-value">{{ income.category }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Data</label>
+                <div class="detail-value">{{ income.date }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Conta</label>
+                <div class="detail-value">{{ income.account.name }}</div>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('incomes.list_incomes') }}"
+               class="btn-secondary">
+                Voltar
+            </a>
+
+            <a href="{{ url_for('incomes.edit_income', id=income.id) }}"
+               class="btn-primary">
+                Editar
+            </a>
+
+            <button type="button"
+                    class="btn-primary"
+                    style="background-color:#c0392b"
+                    onclick="
+                        openDeleteModal(
+                            '{{ income.description }}',
+                            '{{ url_for('incomes.delete_income', id=income.id) }}'
+                        )">
+                Excluir
+            </button>
+        </div>
+    </div>
+</div>
+
+{% include "partials/delete_modal.html" %}
+
+<script>
+function openDeleteModal(description, actionUrl) {
+    document.getElementById("modalText").innerText =
+        `Tem certeza que deseja excluir "${description}"?`;
+
+    document.getElementById("deleteForm").action = actionUrl;
+    document.getElementById("deleteModal").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("deleteModal").classList.remove("active");
+}
+</script>
+
+{% endblock %}

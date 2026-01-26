@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="form-wrapper">
+    <div class="form-card">
+        <h1>Detalhes da Despesa</h1>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Descrição</label>
+                <div class="detail-value">{{ expense.description }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Valor</label>
+                <div class="detail-value">
+                    R$ {{ "%.2f"|format(expense.amount) }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Categoria</label>
+                <div class="detail-value">{{ expense.category }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Forma de Pagamento</label>
+                <div class="detail-value">{{ expense.payment_method }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Data</label>
+                <div class="detail-value">{{ expense.date }}</div>
+            </div>
+
+            <div class="form-group">
+                <label>Conta</label>
+                <div class="detail-value">{{ expense.account.name }}</div>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('expenses.list_expenses') }}"
+               class="btn-secondary">
+                Voltar
+            </a>
+
+            <a href="{{ url_for('expenses.edit_expense', id=expense.id) }}"
+               class="btn-primary">
+                Editar
+            </a>
+
+            <button type="button"
+                    class="btn-primary"
+                    style="background-color:#c0392b"
+                    onclick="
+                        openDeleteModal(
+                            '{{ expense.description }}',
+                            '{{ url_for('expenses.delete_expense', id=expense.id) }}'
+                        )">
+                Excluir
+            </button>
+        </div>
+    </div>
+</div>
+
+{% include "partials/delete_modal.html" %}
+
+<script>
+function openDeleteModal(description, actionUrl) {
+    document.getElementById("modalText").innerText =
+        `Tem certeza que deseja excluir "${description}"?`;
+
+    document.getElementById("deleteForm").action = actionUrl;
+    document.getElementById("deleteModal").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("deleteModal").classList.remove("active");
+}
+</script>
+
+{% endblock %}

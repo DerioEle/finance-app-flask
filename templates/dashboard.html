@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<!-- TOPO DO DASHBOARD -->
+<div class="dashboard-top">
+
+    <!-- FILTRO -->
+    <div class="filter-box">
+        <form method="get" class="filter-form">
+
+            <label>Ano</label>
+            <select name="year">
+                <option value="">Todos</option>
+                {% for y in range(2020, 2031) %}
+                <option value="{{ y }}" {% if selected_year == y %}selected{% endif %}>
+                    {{ y }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Mês</label>
+            <select name="month">
+                <option value="">Todos</option>
+                {% for m in range(1, 13) %}
+                <option value="{{ m }}" {% if selected_month == m %}selected{% endif %}>
+                    {{ m }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label class="checkbox">
+                <input type="checkbox" name="show_pie" value="1"
+                       {% if show_pie %}checked{% endif %}>
+                Mostrar gastos por categoria
+            </label>
+
+            <button type="submit">Filtrar</button>
+        </form>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards cards-inline">
+        <div class="card">
+            <h3>Saldo Total</h3>
+            <p>R$ {{ "%.2f"|format(total_balance) }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Receitas</h3>
+            <p>R$ {{ "%.2f"|format(total_income) }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Despesas</h3>
+            <p>R$ {{ "%.2f"|format(total_expense) }}</p>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<!-- GRÁFICO DE LINHA -->
+<h2>Evolução Mensal</h2>
+<canvas id="monthlyChart"></canvas>
+
+{% if show_pie and category_labels %}
+<hr>
+
+<!-- GRÁFICO DE PIZZA -->
+<h2>Gastos por Categoria</h2>
+<div style="max-width: 400px;">
+    <canvas id="categoryChart"></canvas>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+/* Evolução Mensal */
+new Chart(document.getElementById('monthlyChart'), {
+    type: 'line',
+    data: {
+        labels: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+        datasets: [
+            {
+                label: 'Receitas',
+                data: {{ income_values | tojson }},
+                borderColor: '#2ecc71',
+                tension: 0.3
+            },
+            {
+                label: 'Despesas',
+                data: {{ expense_values | tojson }},
+                borderColor: '#e74c3c',
+                tension: 0.3
+            }
+        ]
+    }
+});
+</script>
+
+{% if show_pie and category_labels %}
+<script>
+/* Gastos por Categoria */
+new Chart(document.getElementById('categoryChart'), {
+    type: 'pie',
+    data: {
+        labels: {{ category_labels | tojson }},
+        datasets: [{
+            data: {{ category_values | tojson }},
+            backgroundColor: [
+                '#3498db','#e74c3c','#2ecc71',
+                '#f1c40f','#9b59b6','#1abc9c'
+            ]
+        }]
+    }
+});
+</script>
+{% endif %}
+
+{% endblock %}

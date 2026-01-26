@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Despesas</h1>
+    <a href="{{ url_for('expenses.create_expense') }}" class="btn-primary">
+        + Nova Despesa
+    </a>
+</div>
+
+<div class="page-content">
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Categoria</th>
+                <th>Valor</th>
+                <th>Conta</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for expense in expenses %}
+            <tr onclick="goToDetail(event, '{{ url_for('expenses.detail_expense', id=expense.id) }}')">
+                <td>{{ expense.description }}</td>
+                <td>{{ expense.category }}</td>
+                <td>R$ {{ "%.2f"|format(expense.amount) }}</td>
+                <td>{{ expense.account.name }}</td>
+                <td>{{ expense.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include "partials/delete_modal.html" %}
+
+<script>
+function goToDetail(event, url) {
+    if (event.target.closest('.actions')) return;
+    window.location.href = url;
+}
+
+function openDeleteModal(description, actionUrl) {
+    document.getElementById("modalText").innerText =
+        `Tem certeza que deseja excluir "${description}"?`;
+
+    document.getElementById("deleteForm").action = actionUrl;
+    document.getElementById("deleteModal").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("deleteModal").classList.remove("active");
+}
+</script>
+
+{% endblock %}
