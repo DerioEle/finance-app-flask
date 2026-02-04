@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import login_required, current_user
 from models.income import Income
 from models.account import Account
 from models import db
@@ -8,12 +9,14 @@ incomes_bp = Blueprint("incomes", __name__, url_prefix="/incomes")
 
 
 @incomes_bp.route("/")
+@login_required
 def list_incomes():
     incomes = Income.query.all()
     return render_template("incomes/incomes.html", incomes=incomes)
 
 
 @incomes_bp.route("/new", methods=["GET", "POST"])
+@login_required
 def create_income():
     accounts = Account.query.all()
 
@@ -38,12 +41,14 @@ def create_income():
 
 
 @incomes_bp.route("/<int:id>")
+@login_required
 def detail_income(id):
     income = Income.query.get_or_404(id)
     return render_template("incomes/detail.html", income=income)
 
 
 @incomes_bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@login_required
 def edit_income(id):
     income = Income.query.get_or_404(id)
     accounts = Account.query.all()
@@ -73,6 +78,7 @@ def edit_income(id):
 
 
 @incomes_bp.route("/delete/<int:id>", methods=["POST"])
+@login_required
 def delete_income(id):
     income = Income.query.get_or_404(id)
     account = income.account

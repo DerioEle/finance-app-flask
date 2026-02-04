@@ -5,15 +5,21 @@
     <div class="form-card">
         <h1>Login</h1>
 
-        <form method="post">
+        <form method="post" novalidate>
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email" required>
+                <label>Email *</label>
+                <input type="email" name="email" required value="{{ request.form.get('email', '') }}">
             </div>
 
             <div class="form-group">
-                <label>Senha</label>
+                <label>Senha *</label>
                 <input type="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="remember"> Lembrar-me
+                </label>
             </div>
 
             <div class="form-actions">
@@ -21,9 +27,9 @@
             </div>
         </form>
 
-        <p style="margin-top:1rem">
+        <p style="margin-top:1rem; text-align: center;">
             Não tem conta?
-            <a href="{{ url_for('auth.register') }}">Cadastre-se</a>
+            <a href="{{ url_for('auth.register') }}">Cadastre-se aqui</a>
         </p>
     </div>
 </div>

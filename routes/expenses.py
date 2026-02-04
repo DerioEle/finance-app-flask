@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import login_required, current_user
 from models.expense import Expense
 from models.account import Account
 from models import db
@@ -8,12 +9,14 @@ expenses_bp = Blueprint("expenses", __name__, url_prefix="/expenses")
 
 
 @expenses_bp.route("/")
+@login_required
 def list_expenses():
     expenses = Expense.query.all()
     return render_template("expenses/expenses.html", expenses=expenses)
 
 
 @expenses_bp.route("/new", methods=["GET", "POST"])
+@login_required
 def create_expense():
     accounts = Account.query.all()
 
@@ -39,12 +42,14 @@ def create_expense():
 
 
 @expenses_bp.route("/<int:id>")
+@login_required
 def detail_expense(id):
     expense = Expense.query.get_or_404(id)
     return render_template("expenses/detail.html", expense=expense)
 
 
 @expenses_bp.route("/edit/<int:id>", methods=["GET", "POST"])
+@login_required
 def edit_expense(id):
     expense = Expense.query.get_or_404(id)
     accounts = Account.query.all()
@@ -75,6 +80,7 @@ def edit_expense(id):
 
 
 @expenses_bp.route("/delete/<int:id>", methods=["POST"])
+@login_required
 def delete_expense(id):
     expense = Expense.query.get_or_404(id)
     account = expense.account
