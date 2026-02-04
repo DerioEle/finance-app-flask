@@ -1,8 +1,6 @@
 from models import db
 from datetime import datetime
 
-_profissionais_=None
-
 class Income(db.Model):
     __tablename__ = "incomes"
 
