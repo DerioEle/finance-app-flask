@@ -10,12 +10,31 @@
 <nav class="navbar">
     <h2>Finance App</h2>
     <ul>
-        <li><a href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
         <li><a href="{{ url_for('accounts.list_accounts') }}">Contas</a></li>
         <li><a href="{{ url_for('incomes.list_incomes') }}">Receitas</a></li>
         <li><a href="{{ url_for('expenses.list_expenses') }}">Despesas</a></li>
     </ul>
 </nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="margin: 1rem;">
+      {% for category, message in messages %}
+        <div style="
+            padding: 0.8rem;
+            border-radius: 6px;
+            background-color: {% if category == 'error' %}#fdecea{% else %}#eafaf1{% endif %};
+            color: {% if category == 'error' %}#c0392b{% else %}#27ae60{% endif %};
+            margin-bottom: 0.5rem;
+        ">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 
 <main>
     {% block content %}{% endblock %}
